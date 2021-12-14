@@ -40,14 +40,12 @@ router.get('/fetch', async (req, res, next) => {
 
   try {
     const { data } = req.body;
-    const result = await Data.find({}).select(data);
-
-    const dataSet = result.map(r => r[data]);
+    console.log('data');
+    const result = await Data.find({}).select('time ' + data);
     console.log('Database Response : ', result);
-    console.log('DataSet for ', data, ' : ', dataSet);
-    res.status(200).send({ name: data, dataSet });
+    res.status(200).send(result);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ message: 'Something went wrong' });
   }
 
 });
