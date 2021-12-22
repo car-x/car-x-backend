@@ -2,25 +2,25 @@ const mongoose = require('mongoose');
 
 const arduinoControlSchema = mongoose.Schema({
   APIkey: String,
-  LED1: String,
-  LED2: String,
-  LED3: String,
-  LED4: String,
+  led1: Boolean,
+  led2: Boolean,
+  led3: Boolean,
+  led4: Boolean,
 }, { timestamps: true }
 );
 
 let ArduinoControl = mongoose.model('arduinoControl', arduinoControlSchema);
 
-// let t = ArduinoControlSchema.create({
-//   LED1: 'ON',
-//   LED2: 'ON',
-//   LED3: 'ON',
-//   LED4: 'OFF',
-//   APIkey: '61bf44d552dd0cf6d898f46f',
+// let t = ArduinoControl.create({
+//   led1: 'ON',
+//   led2: 'OFF',
+//   led3: 'OFF',
+//   led4: 'OFF',
+//   APIkey: '61bf7d0ac38bacc0bfd0970c',
 // }).then((res) =>
 //   console.log(res)
 // );
-// let t = control.find({ APIkey: '61bf44d552dd0cf6d898f46f' }).then((res) =>
+// let t = control.find({ APIkey: '61bf7d0ac38bacc0bfd0970c' }).then((res) =>
 //   console.log(res)
 // );
 

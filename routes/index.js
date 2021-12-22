@@ -55,4 +55,27 @@ router.get('/fetch', async (req, res, next) => {
 
 });
 
+router.post('/arduinoControl', async (req, res) => {
+  try {
+    const { APIkey } = req.body;
+    // console.log("API KEY: ", APIkey);
+    const result = await ArduinoControl.findOne({ APIkey: APIkey }).select('led1 led2 led3 led4');
+    console.log('Database Response : ', result);
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+});
+
+router.post('/control', async (req, res) => {
+  try {
+    const { APIkey, userId, userName, controlName, controlType } = req.body;
+    const result = await Control.create({ APIkey, userId, userName, controlName, controlType });
+    const r = await ArduinoControl.findOneAndUpdate({ APIkey: APIkey }, { "$set": { [controlName]: controlType } }, { new: true });
+    res.status(200).send(r);
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+});
+
 module.exports = router;
