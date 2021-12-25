@@ -17,11 +17,23 @@ router.get('/data', async (req, res, next) => {
 
   try {
     const data = req.query;
-    console.table(data);
-    const result = await Data.create(data)
+    // console.table(data);
+    const result = await Data.create(data);
     console.log('Database Response : ', result);
-    res.status(200).send({ data: result });
+    const controlData = await ArduinoControl.findOne({ APIkey: data.APIkey }).select('led1 led2 led3 led4');
+    // console.log('Database Response : ', controlData);
+    req.io.sockets.to(data.APIkey).emit("new data", {
+      _id: result._id,
+      temp: result.temp,
+      speed: result.speed,
+      createdAt: result.createdAt,
+      time: result.time
+    });
+
+
+    res.status(200).send(controlData);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Something went wrong' })
   }
 
@@ -32,7 +44,7 @@ router.post('/fetch', async (req, res) => {
 
   try {
     const { APIkey } = req.body;
-    const result = await Data.find({ APIkey })
+    const result = await Data.find({ APIkey }).select('temp speed createdAt time');
     // console.log('Database Response : ', result);
     res.status(200).send(result);
   } catch (error) {
@@ -61,7 +73,7 @@ router.post('/arduinoControl', async (req, res) => {
     const { APIkey } = req.body;
     // console.log("API KEY: ", APIkey);
     const result = await ArduinoControl.findOne({ APIkey: APIkey }).select('led1 led2 led3 led4');
-    console.log('Database Response : ', result);
+    // console.log('Database Response : ', result);
     res.status(200).send(result);
   } catch (error) {
     res.status(500).json({ message: 'Something went wrong' });
@@ -88,12 +100,17 @@ router.post('/control', async (req, res) => {
   try {
     const { APIkey, userId, userName, controlName, controlType } = req.body;
     const result = await Control.create({ APIkey, userId, userName, controlName, controlType });
-    console.log('PASSED 1', userName);
     let message = '' + userName + ': ' + getControlName(controlName) + ' ' + getControlStatus(controlType);
-    console.log('PASSED 2');
-    console.log(message);
     const noti = await Notification.create({ APIkey, type: 'info', message });
     const r = await ArduinoControl.findOneAndUpdate({ APIkey: APIkey }, { "$set": { [controlName]: controlType } }, { new: true });
+
+    req.io.sockets.to(APIkey).emit("new control", {
+      controlName: controlName,
+      controlType: controlType
+    });
+
+    req.io.sockets.to(APIkey).emit("new notification", noti);
+
     res.status(200).send(r);
   } catch (error) {
     res.status(500).json({ message: 'Something went wrong' });
@@ -115,6 +132,21 @@ router.post('/data/notification', async (req, res) => {
     const { APIkey, type, message } = req.body;
     const result = await Notification.create({ APIkey, type, message });
     res.status(200).send(result);
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+});
+
+// var io = require('../bin/www');
+// console.log(io);
+router.post('/test-socket', (req, res) => {
+  try {
+    const { message, APIkey } = req.body;
+    console.log('Passed 1');
+    req.io.sockets.emit("test message", message);
+    console.log('Passed 1');
+
+    res.status(200).json(message);
   } catch (error) {
     res.status(500).json({ message: 'Something went wrong' });
   }
