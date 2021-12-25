@@ -143,8 +143,9 @@ function onListening() {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "https://car-x-official.web.app/", //http://localhost:3000
-    credentials: true,
+    origin: "https://car-x-official.web.app/",
+    methods: ["GET", "POST"],
+    // credentials: true,
   },
 });
 
