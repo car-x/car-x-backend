@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const Data = require('../models/data');
 const Control = require('../models/control');
-const ArduinoControl = require('../models/arduinocontrol');
+const Arduino = require('../models/arduino');
 const Notification = require('../models/notification');
 const User = require('../models/user');
 const Device = require('../models/device');
@@ -20,7 +20,7 @@ router.get('/data', async (req, res, next) => {
     // console.table(data);
     const result = await Data.create(data);
     console.log('Database Response : ', result);
-    const controlData = await ArduinoControl.findOne({ APIkey: data.APIkey }).select('led1 led2 led3 led4');
+    const controlData = await Arduino.findOne({ APIkey: data.APIkey }).select('led1 led2 led3 led4');
     // console.log('Database Response : ', controlData);
     req.io.sockets.to(data.APIkey).emit("new data", {
       _id: result._id,
@@ -68,11 +68,11 @@ router.get('/fetch', async (req, res, next) => {
 
 });
 
-router.post('/arduinoControl', async (req, res) => {
+router.post('/arduino', async (req, res) => {
   try {
     const { APIkey } = req.body;
     // console.log("API KEY: ", APIkey);
-    const result = await ArduinoControl.findOne({ APIkey: APIkey }).select('led1 led2 led3 led4');
+    const result = await Arduino.findOne({ APIkey: APIkey }).select('led1 led2 led3 led4');
     // console.log('Database Response : ', result);
     res.status(200).send(result);
   } catch (error) {
@@ -102,7 +102,7 @@ router.post('/control', async (req, res) => {
     const result = await Control.create({ APIkey, userId, userName, controlName, controlType });
     let message = '' + userName + ': ' + getControlName(controlName) + ' ' + getControlStatus(controlType);
     const noti = await Notification.create({ APIkey, type: 'info', message });
-    const r = await ArduinoControl.findOneAndUpdate({ APIkey: APIkey }, { "$set": { [controlName]: controlType } }, { new: true });
+    const r = await Arduino.findOneAndUpdate({ APIkey: APIkey }, { "$set": { [controlName]: controlType } }, { new: true });
 
     req.io.sockets.to(APIkey).emit("new control", {
       controlName: controlName,

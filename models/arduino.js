@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const arduinoControlSchema = mongoose.Schema({
+const arduinoSchema = mongoose.Schema({
   APIkey: String,
   led1: Boolean,
   led2: Boolean,
@@ -9,9 +9,9 @@ const arduinoControlSchema = mongoose.Schema({
 }, { timestamps: true }
 );
 
-let ArduinoControl = mongoose.model('arduinoControl', arduinoControlSchema);
+let Arduino = mongoose.model('arduino', arduinoSchema);
 
-// let t = ArduinoControl.create({
+// let t = Arduino.create({
 //   led1: 'ON',
 //   led2: 'OFF',
 //   led3: 'OFF',
@@ -24,4 +24,4 @@ let ArduinoControl = mongoose.model('arduinoControl', arduinoControlSchema);
 //   console.log(res)
 // );
 
-module.exports = ArduinoControl;
+module.exports = Arduino;
