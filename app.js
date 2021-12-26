@@ -8,6 +8,9 @@ var logger = require('morgan');
 var cors = require('cors');
 
 var indexRouter = require('./routes/index');
+var dataRouter = require('./routes/data');
+var controlRouter = require('./routes/control');
+var notificationRouter = require('./routes/notification');
 // var usersRouter = require('./routes/users');
 
 var app = express();
@@ -143,7 +146,8 @@ function onListening() {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "https://car-x-official.web.app/",
+    origin: "http://localhost:3000/",
+    // origin: "https://car-x-official.web.app/",
     methods: ["GET", "POST"],
     // credentials: true,
   },
@@ -190,6 +194,9 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use('/data', dataRouter);
+app.use('/control', controlRouter);
+app.use('/notification', notificationRouter);
 app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 
