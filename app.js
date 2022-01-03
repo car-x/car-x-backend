@@ -12,6 +12,7 @@ var dataRouter = require('./routes/data');
 var controlRouter = require('./routes/control');
 var notificationRouter = require('./routes/notification');
 var loginRouter = require('./routes/login');
+var accountsRouter = require('./routes/accounts');
 // var usersRouter = require('./routes/users');
 
 var app = express();
@@ -147,8 +148,8 @@ function onListening() {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    // origin: "http://localhost:3000/",
-    origin: "https://car-x-official.web.app/",
+    origin: "http://localhost:3000/",
+    // origin: "https://car-x-official.web.app/",
     methods: ["GET", "POST"],
     // credentials: true,
   },
@@ -163,6 +164,10 @@ io.on("connection", (socket) => {
     console.log(user?.name, ' connected to :', room);
     socket.join(room);
     socket.emit("connected", room);
+  });
+
+  socket.on('disconnect', function () {
+    console.log('A user disconnected');
   });
 
   socket.on("join chat", (room) => {
@@ -199,6 +204,7 @@ app.use('/data', dataRouter);
 app.use('/control', controlRouter);
 app.use('/notification', notificationRouter);
 app.use('/login', loginRouter);
+app.use('/accounts', accountsRouter);
 app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 

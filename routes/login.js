@@ -13,6 +13,9 @@ router.post('/', async (req, res, next) => {
     const oldUser = await User.findOne({ email, password });
     if (!oldUser)
       return res.status(401).send({ message: "Check Email Id or Password!" });
+    else if (oldUser.userType === 'disable') {
+      return res.status(400).json({ message: 'Your Account is Disabled by Owner' });
+    }
     const token = jwt.sign({ id: oldUser._id, APIkey: oldUser.APIkey }, secret);
 
     res.status(200).json({ user: oldUser, token });
