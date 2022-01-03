@@ -13,6 +13,7 @@ var controlRouter = require('./routes/control');
 var notificationRouter = require('./routes/notification');
 var loginRouter = require('./routes/login');
 var accountsRouter = require('./routes/accounts');
+var profileRouter = require('./routes/profile');
 // var usersRouter = require('./routes/users');
 
 var app = express();
@@ -148,8 +149,8 @@ function onListening() {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000/",
-    // origin: "https://car-x-official.web.app/",
+    // origin: "http://localhost:3000/",
+    origin: process.env.SERVER_URL || "https://car-x-official.web.app/",
     methods: ["GET", "POST"],
     // credentials: true,
   },
@@ -205,6 +206,7 @@ app.use('/control', controlRouter);
 app.use('/notification', notificationRouter);
 app.use('/login', loginRouter);
 app.use('/accounts', accountsRouter);
+app.use('/profile', profileRouter);
 app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 
