@@ -196,6 +196,18 @@ io.on("connection", (socket) => {
   });
 });
 
+// setInterval(() => {
+//   let api = '61bf7d0ac38bacc0bfd0970c'
+//   console.log('Submited Socket');
+//   io.sockets.to(api).emit("new data", {
+//     _id: Math.random(1000) * 10000,
+//     temp: Math.ceil(Math.random(1000) * 100),
+//     speed: Math.ceil(Math.random(1000) * 100),
+//     createdAt: Date.now(),
+//     time: Date.now()
+//   });
+// }, 5000);
+
 app.use(function (req, res, next) {
   req.io = io;
   next();
