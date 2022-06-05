@@ -12,16 +12,16 @@ const getControlName = (controlName) => {
   if (controlName === 'led1') return 'LED 1';
   if (controlName === 'led2') return 'LED 2';
   if (controlName === 'led3') return 'LED 3';
-  if (controlName === 'led4') return 'LED 4';
+  if (controlName === 'sm1') return 'Stepper Motor 1';
 
   return 'Unknown';
 }
 
 const getControlStatus = (controlStatus) => {
-  if (controlStatus) return 'ON';
+  if (controlStatus === true) return 'ON';
   if (controlStatus === false) return 'OFF';
 
-  return 'Unknown';
+  return controlStatus;
 }
 // --------------------------------------------
 
@@ -29,6 +29,7 @@ const getControlStatus = (controlStatus) => {
 router.post('/', async (req, res) => {
   try {
     const { APIkey, userId, userName, controlName, controlType } = req.body;
+    console.log(req.body);
     const result = await Control.create({ APIkey, userId, userName, controlName, controlType });
     let message = '' + userName + ': ' + getControlName(controlName) + ' ' + getControlStatus(controlType);
     const noti = await Notification.create({ APIkey, type: 'info', message });
@@ -52,7 +53,7 @@ router.post('/fetch', async (req, res) => {
   try {
     const { APIkey } = req.body;
     // console.log("API KEY: ", APIkey);
-    const result = await Arduino.findOne({ APIkey: APIkey }).select('led1 led2 led3 led4');
+    const result = await Arduino.findOne({ APIkey: APIkey }).select('led1 led2 led3 sm1');
     // console.log('Database Response : ', result);
     res.status(200).send(result);
   } catch (error) {

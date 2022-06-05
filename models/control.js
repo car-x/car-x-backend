@@ -5,7 +5,7 @@ const controlSchema = mongoose.Schema({
   userId: String,
   userName: String,
   controlName: String,
-  controlType: Boolean
+  controlType: mongoose.Schema.Types.Mixed,
 }, { timestamps: true }
 );
 

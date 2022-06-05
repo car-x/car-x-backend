@@ -15,7 +15,7 @@ router.get('/', async (req, res, next) => {
     // console.table(data);
     const result = await Data.create(data);
     console.log('Database Response : ', result);
-    const controlData = await Arduino.findOne({ APIkey: data.APIkey }).select('led1 led2 led3 led4');
+    const controlData = await Arduino.findOne({ APIkey: data.APIkey }).select('led1 led2 led3 sm1');
     // console.log('Database Response : ', controlData);
 
     req.io.sockets.to(data.APIkey).emit("new data", {
