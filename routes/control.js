@@ -12,7 +12,7 @@ const getControlName = (controlName) => {
   if (controlName === 'led1') return 'LED 1';
   if (controlName === 'led2') return 'LED 2';
   if (controlName === 'led3') return 'LED 3';
-  if (controlName === 'sm1') return 'Stepper Motor 1';
+  if (controlName === 'sm1') return 'Servo Motor';
 
   return 'Unknown';
 }
